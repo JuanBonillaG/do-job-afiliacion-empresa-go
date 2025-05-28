@@ -13,14 +13,14 @@ def get_api_token():
     """
 
     client = secretmanager.SecretManagerServiceClient()
-    url = client.access_secret_version(name='projects/263751840195/secrets/go_token_url/versions/latest').payload.data.decode("UTF-8") + "/oauth/token"
+    url = client.access_secret_version(name='projects/287760044484/secrets/go_token_url/versions/latest').payload.data.decode("UTF-8") + "/oauth/token"
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"
     }
     data = {
         "grant_type": "client_credentials",
-        "client_id": client.access_secret_version(name='projects/263751840195/secrets/go_client_id/versions/latest').payload.data.decode("UTF-8"),
-        "client_secret": client.access_secret_version(name='projects/263751840195/secrets/go_client_secret/versions/latest').payload.data.decode("UTF-8")
+        "client_id": client.access_secret_version(name='projects/287760044484/secrets/go_client_id/versions/latest').payload.data.decode("UTF-8"),
+        "client_secret": client.access_secret_version(name='projects/287760044484/secrets/go_client_secret/versions/latest').payload.data.decode("UTF-8")
     }
     try:
         response = requests.post(url, headers=headers, data=data)
@@ -45,7 +45,7 @@ def get_users_api_go_integro(token):
         dataframe: Respuesta del endpoint como dataframe, o None si falla la solicitud.
     """
     client = secretmanager.SecretManagerServiceClient()
-    url = client.access_secret_version(name='projects/263751840195/secrets/go_token_url/versions/latest').payload.data.decode("UTF-8") + "/users"
+    url = client.access_secret_version(name='projects/287760044484/secrets/go_token_url/versions/latest').payload.data.decode("UTF-8") + "/users"
     headers = {
         "accept": "application/json",
         "Authorization": token
@@ -92,7 +92,7 @@ def create_users_api_go_integro(df, token):
         str: Respuesta del endpoint exitoso o lista de fallidos.
     """
     client = secretmanager.SecretManagerServiceClient()
-    url = client.access_secret_version(name='projects/263751840195/secrets/go_token_url/versions/latest').payload.data.decode("UTF-8") + "/users"
+    url = client.access_secret_version(name='projects/287760044484/secrets/go_token_url/versions/latest').payload.data.decode("UTF-8") + "/users"
     headers = {
         "accept": "application/json",
         "Authorization": token,
