@@ -6,7 +6,7 @@ from utils.api_go_integro import get_users_api_go_integro, get_api_token, create
 ## Lee los usuarios desde la API Afiliación de empresas
 df_users = get_users_api_consulta_afiliacion('GO_INTEGRO')
 
-if df_users.empty:
+if df_users is None or df_users.empty:
     print("No se encontraron usuarios en la API consulta afiliación empresa")
     exit()  
 
