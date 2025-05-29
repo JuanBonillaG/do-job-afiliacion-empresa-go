@@ -40,10 +40,14 @@ token = get_api_token()
 df_users_go = get_users_api_go_integro(token)
 
 print("Se encontraron usuarios en la API GO Integro")
-print(df_users_go)
+print(df_users_go["employee_id"])
+
+## Asegura la consistencia de tipo de employee_id
+df_users["employee_id"] = df_users["employee_id"].astype(str)
+df_users_go["employee_id"] = df_users_go["employee_id"].astype(str)
 
 ## Filtra usuarios cuyo employee_id no existe en GO INTEGRO
 df_new_users = df_users[~df_users["employee_id"].isin(df_users_go["employee_id"])]
 
 print("Usuarios filtrados que no existen aún en GO INTEGRO")
-print(df_new_users)
+print(df_new_users["employee_id"])
