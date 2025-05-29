@@ -44,7 +44,6 @@ def get_users_api_go_integro(token):
     Returns:
         dataframe: Respuesta del endpoint como dataframe, o None si falla la solicitud.
     """
-    client = secretmanager.SecretManagerServiceClient()
     url ="https://api.gointegro.com/users"
     headers = {
         "accept": "application/json",
@@ -91,7 +90,6 @@ def create_users_api_go_integro(df, token):
     Returns:
         str: Respuesta del endpoint exitoso o lista de fallidos.
     """
-    client = secretmanager.SecretManagerServiceClient()
     url ="https://api.gointegro.com/users"
     headers = {
         "accept": "application/json",

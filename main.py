@@ -51,3 +51,6 @@ df_new_users = df_users[~df_users["employee_id"].isin(df_users_go["employee_id"]
 
 print("Usuarios filtrados que no existen aún en GO INTEGRO")
 print(df_new_users["employee_id"])
+
+## Escribe los usuarios por importar en GO INTEGRO
+result = create_users_api_go_integro(df_new_users,token)
