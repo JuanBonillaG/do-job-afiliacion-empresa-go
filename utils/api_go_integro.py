@@ -60,7 +60,7 @@ def get_users_api_go_integro(token):
             for user in data:
                 attributes = user.get("attributes", {})
                 users.append({
-                    "employee_id": user.get("id"),
+                    "employee_id": attributes.get("employee-id"),
                     "email": attributes.get("email"),
                     "first_name": attributes.get("name"),
                     "last_name": attributes.get("last-name"),
