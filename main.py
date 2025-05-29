@@ -45,6 +45,7 @@ print(df_users_go["employee_id"])
 ## Asegura la consistencia de tipo de employee_id
 df_users["employee_id"] = df_users["employee_id"].astype(str)
 df_users_go["employee_id"] = df_users_go["employee_id"].astype(str)
+df_users["document"] = df_users["document"].astype(str)
 
 ## Filtra usuarios cuyo employee_id no existe en GO INTEGRO
 df_new_users = df_users[~df_users["employee_id"].isin(df_users_go["employee_id"])]
@@ -54,3 +55,6 @@ print(df_new_users["employee_id"])
 
 ## Escribe los usuarios por importar en GO INTEGRO
 result = create_users_api_go_integro(df_new_users,token)
+
+if(result != 'exitoso'):
+    raise Exception(result) 

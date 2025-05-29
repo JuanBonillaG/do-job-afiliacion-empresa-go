@@ -76,9 +76,6 @@ def get_users_api_go_integro(token):
         print(f"Excepción al obtener usuarios: {e}")
         return None
 
-import requests
-import json
-
 def create_users_api_go_integro(df, token):
     """
     Obtiene la lista de usuarios desde el endpoint de GO Integro.
