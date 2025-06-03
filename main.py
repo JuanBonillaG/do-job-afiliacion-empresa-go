@@ -12,7 +12,7 @@ df_users = pd.DataFrame([{
     "last_name": "manual",
     "employee_id": 123456,
     "document_type": "CC",
-    "groups": "Empresas A&A: COLOMBIA SAS",
+    "groups": "Empresas A&A:COLOMBIA SAS",
     "document": 123456,
     "external_id": "SB-987654321"
 },
@@ -22,7 +22,7 @@ df_users = pd.DataFrame([{
     "last_name": "job",
     "employee_id": 987654321,
     "document_type": "CC",
-    "groups": "Empresas A&A: COLOMBIA SAS",
+    "groups": "Empresas A&A:COLOMBIA SAS",
     "document": 987654321,
     "external_id": "SB-4389278"
 }])
