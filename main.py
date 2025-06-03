@@ -7,7 +7,7 @@ from utils.api_go_integro import get_users_api_go_integro, get_api_token, create
 #df_users = get_users_api_consulta_afiliacion('GO_INTEGRO')
 
 df_users = pd.DataFrame([{
-    "first_name": "test-api-1",
+    "first_name": "Antiguo Usuario",
     "email": None,
     "last_name": "manual",
     "employee_id": 123456,
@@ -17,14 +17,14 @@ df_users = pd.DataFrame([{
     "external_id": "SB-987654321"
 },
 {
-    "first_name": "test-api-2",
+    "first_name": "Nuevo Usuario",
     "email": None,
     "last_name": "job",
-    "employee_id": 1234567,
+    "employee_id": 987654321,
     "document_type": "CC",
     "groups": "Empresas A&A: COLOMBIA SAS",
-    "document": 1234567,
-    "external_id": "SB-987654321"
+    "document": 987654321,
+    "external_id": "SB-4389278"
 }])
 
 if df_users is None or df_users.empty:
