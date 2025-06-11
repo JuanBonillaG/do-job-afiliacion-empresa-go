@@ -37,29 +37,44 @@ def get_api_token():
 
 def get_users_api_go_integro(token):
     """
-    Obtiene la lista de usuarios desde el endpoint de GO Integro.
+    Obtiene la lista completa de usuarios desde el endpoint de GO Integro con paginación.
 
     Args:
         token (str): access_token para autorización.
 
     Returns:
-        dataframe: Respuesta del endpoint como dataframe, o None si falla la solicitud.
+        DataFrame: Respuesta del endpoint como DataFrame, o None si falla la solicitud.
     """
-    url ="https://api.gointegro.com/users"
+    print("Lectura de usuarios desde API GO Integro")
+    base_url = "https://api.gointegro.com/users"
     headers = {
         "accept": "application/json",
         "Authorization": token
     }
-    print("Lectura de de usuarios desde API GO Integro")
-    try:
-        response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            data = response.json().get("data", [])
 
-            users = []
+    page_size = 50
+    page_number = 1
+    all_users = []
+
+    try:
+        while True:
+            params = {
+                "page[size]": page_size,
+                "page[number]": page_number
+            }
+
+            response = requests.get(base_url, headers=headers, params=params)
+            if response.status_code != 200:
+                print(f"Error al obtener usuarios: {response.status_code}, {response.text}")
+                return None
+
+            json_response = response.json()
+
+            data = json_response.get("data", [])
             for user in data:
                 attributes = user.get("attributes", {})
-                users.append({
+                all_users.append({
+                    "id": user.get("id"),
                     "employee_id": attributes.get("employee-id"),
                     "email": attributes.get("email"),
                     "first_name": attributes.get("name"),
@@ -69,10 +84,15 @@ def get_users_api_go_integro(token):
                     "external_id": attributes.get("external-id")
                 })
 
-            return pd.DataFrame(users)
-        else:
-            print(f"Error al obtener usuarios: {response.status_code}, {response.text}")
-            return None
+            # Validación de proceso de Paginación
+            pagination = json_response.get("meta", {}).get("pagination", {})
+            total_pages = pagination.get("total-pages", 1)
+            if page_number >= total_pages:
+                break
+            page_number += 1
+
+        return pd.DataFrame(all_users)
+
     except Exception as e:
         print(f"Excepción al obtener usuarios: {e}")
         return None
@@ -130,3 +150,52 @@ def create_users_api_go_integro(df, token):
         return f"usuarios fallidos: {failed_users}"
     else:
         return "exitoso"
+    
+def update_users_api_go_integro(df, token):
+    """
+    Actualiza usuarios en GO Integro.
+
+    Args:
+        token (str):    access_token para autorización.
+        df (DataFrame): DataFrame con los usuarios a actualizar.
+
+    Returns:
+        list: Lista con mensajes de respuesta por cada usuario.
+    """
+    results = []
+
+    for idx, row in df.iterrows():
+        user_id = row["id"]
+        url = f"https://api.gointegro.com/users/{user_id}"
+        headers = {
+            "accept": "application/json",
+            "Authorization": token,
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "data": {
+                "type": "users",
+                "id": user_id,
+                "attributes": {
+                    "name": row["first_name"],
+                    "last-name": row["last_name"],
+                    "email": row["email"],
+                    "employee-id": row["employee_id"],
+                    "document-type": row["document_type"],
+                    "document": row["document"],
+                    "external_id": row["external_id"],
+                    "status": "active",
+                    "login-enabled": True
+                }
+            }
+        }
+        try:
+            response = requests.patch(url, headers=headers, data=json.dumps(payload))
+            if response.status_code == 200:
+                results.append(f"Usuario {user_id},{row["document"]} actualizado correctamente.")
+            else:
+                results.append(f"Error al actualizar usuario {user_id},{row["document"]}: {response.status_code}, {response.text}")
+        except Exception as e:
+            results.append(f"Excepción al actualizar usuario {user_id},{row["document"]}: {e}")
+
+    return results
