@@ -11,7 +11,7 @@ def compare_users(df_users_afiliacion,df_users_go):
         DataFrame: DataFrame con los usuarios a actualizar.
     """
     # Define las columnas que se van a usar para la comparación y unión.
-    COLS_TO_CHECK = ["email", "first_name", "last_name", "document_type"]
+    COLS_TO_CHECK = ["document", "email", "first_name", "last_name", "document_type"]
     JOIN_KEY = "document"
 
     # Une los DataFrames usando solo las columnas necesarias.
@@ -29,6 +29,8 @@ def compare_users(df_users_afiliacion,df_users_go):
     # Realiza la comparación
     diff_mask = pd.Series(False, index=merged_df.index)
     for col in COLS_TO_CHECK:
+        if col == JOIN_KEY:
+            continue # No comparar la clave de unión consigo misma
         col_afil = col + '_afil'
         col_go = col + '_go'
         diff_mask |= (merged_df[col_afil] != merged_df[col_go]) & \
