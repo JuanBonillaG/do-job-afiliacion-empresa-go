@@ -3,7 +3,6 @@ import pandas as pd
 import json
 
 from google.cloud import secretmanager
-#from utils.sheets import *
     
 def get_api_token():
     """
@@ -131,6 +130,16 @@ def create_users_api_go_integro(df, token):
                     "external_id": row["external_id"],
                     "status": "active",
                     "login-enabled": True
+                },
+                "relationships": {
+                    "group-items": {
+                        "data": [
+                            {
+                                "type": "group-items",
+                                "id": row["group_item_id"]
+                            }
+                        ]
+                    }
                 }
             }
         }
@@ -186,6 +195,16 @@ def update_users_api_go_integro(df, token):
                     "external_id": row["external_id"],
                     "status": "active",
                     "login-enabled": True
+                },
+                "relationships": {
+                    "group-items": {
+                        "data": [
+                            {
+                                "type": "group-items",
+                                "id": row["group_item_id"]
+                            }
+                        ]
+                    }
                 }
             }
         }
@@ -199,3 +218,60 @@ def update_users_api_go_integro(df, token):
             results.append(f"Excepción al actualizar usuario {user_id},{row["document"]}: {e}")
 
     return results
+
+def get_group_items_api_go_integro(token):
+    """
+    Obtiene la lista completa de grupos desde el endpoint de GO Integro con paginación.
+
+    Args:
+        token (str): access_token para autorización.
+
+    Returns:
+        DataFrame: Respuesta del endpoint como DataFrame, o None si falla la solicitud.
+    """
+    print("Lectura de usuarios desde API GO Integro")
+    base_url = "https://api.gointegro.com/group-items"
+    headers = {
+        "accept": "application/json",
+        "Authorization": token
+    }
+
+    page_size = 50
+    page_number = 1
+    all_group_items = []
+
+    try:
+        while True:
+            params = {
+                "page[size]": page_size,
+                "page[number]": page_number
+            }
+
+            response = requests.get(base_url, headers=headers, params=params)
+            if response.status_code != 200:
+                print(f"Error al obtener group items: {response.status_code}, {response.text}")
+                return None
+
+            json_response = response.json()
+
+            data = json_response.get("data", [])
+            for group_item in data:
+                attributes = group_item.get("attributes", {})
+                all_group_items.append({
+                    "id": group_item.get("id"),
+                    "type": group_item.get("type"),
+                    "name": attributes.get("name")
+                })
+
+            # Validación de proceso de Paginación
+            pagination = json_response.get("meta", {}).get("pagination", {})
+            total_pages = pagination.get("total-pages", 1)
+            if page_number >= total_pages:
+                break
+            page_number += 1
+
+        return pd.DataFrame(all_group_items)
+
+    except Exception as e:
+        print(f"Excepción al obtener group items: {e}")
+        return None

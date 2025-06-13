@@ -1,8 +1,9 @@
 import pandas as pd
 
 from utils.api_do_afiliacion import get_users_api_consulta_afiliacion
-from utils.api_go_integro import get_users_api_go_integro, get_api_token, create_users_api_go_integro, update_users_api_go_integro
-from utils.job_functions import compare_users
+from utils.api_go_integro import get_users_api_go_integro, get_api_token, create_users_api_go_integro, update_users_api_go_integro, get_group_items_api_go_integro
+from utils.job_functions import compare_users, update_users_with_group_items
+
 ## Lee los usuarios desde la API Afiliación de empresas
 df_users = get_users_api_consulta_afiliacion('GO_INTEGRO')
 
@@ -32,39 +33,45 @@ if df_users is None or df_users.empty:
     print("No se encontraron usuarios en la API consulta afiliación empresa")
     exit()  
 
-print("Se encontraron usuarios en la API consulta afiliación empresa")
-#print(df_users)
+print(f"Cantidad de usuarios encontrados en la API consulta afiliación empresa: {len(df_users)}")
+
+## Obtiene token de acceso GO INTEGRO
+token = get_api_token()
 
 ## Lee los usuarios ya registrados en GO INTEGRO
-token = get_api_token()
 df_users_go = get_users_api_go_integro(token)
+## Lee los grupos creados en GO INTEGRO
+df_group_items = get_group_items_api_go_integro(token)
 
-print("Se encontraron usuarios en la API GO Integro")
-print(df_users_go["document"])
-
-## Asegura la consistencia de tipo de employee_id
-df_users["employee_id"] = df_users["employee_id"].astype(str)
-df_users_go["employee_id"] = df_users_go["employee_id"].astype(str)
+# Asegura la consistencia de tipos
 df_users["document"] = df_users["document"].astype(str)
 df_users_go["document"] = df_users_go["document"].astype(str)
 
 ## Filtra usuarios cuyo documento no existe en GO INTEGRO
 df_new_users = df_users[~df_users["document"].isin(df_users_go["document"])]
 
-print("Usuarios filtrados que no existen aún en GO INTEGRO")
-print(df_new_users["document"])
+result        = 'exitoso'
+result_update = 'exitoso'
+if not df_new_users.empty:
+    print(f"Usuarios que no existen aún en GO INTEGRO: {len(df_new_users)}")
 
-## Escribe los usuarios por importar en GO INTEGRO
-result = create_users_api_go_integro(df_new_users,token)
+    ## Cruza los usuarios por insertar con grupos de GO INTEGRO
+    df_new_users = update_users_with_group_items(df_new_users, df_group_items)
+
+    ## Escribe los usuarios por importar en GO INTEGRO
+    #result = create_users_api_go_integro(df_new_users, token)
 
 ## Toma los usuarios con cambios frente a GO INTEGRO
-df_users_to_update = compare_users(df_users,df_users_go)
+df_users_to_update = compare_users(df_users, df_users_go)
 
-print("Usuarios por actualizar en GO INTEGRO")
-print(df_users_to_update)
+if not df_users_to_update.empty:
+    print(f"Usuarios por actualizar en GO INTEGRO: {len(df_users_to_update)}")
 
-## Actualiza los usuarios en GO Integro
-result_update = update_users_api_go_integro
+    ## Cruza los usuarios por insertar con grupos de GO INTEGRO
+    df_users_to_update = update_users_with_group_items(df_users_to_update, df_group_items)
+
+    ## Actualiza los usuarios en GO Integro
+    #result_update = update_users_api_go_integro
 
 if(result != 'exitoso'):
     raise Exception(result)
