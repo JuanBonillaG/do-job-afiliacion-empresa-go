@@ -11,7 +11,7 @@ def compare_users(df_users_afiliacion,df_users_go):
         DataFrame: DataFrame con los usuarios a actualizar.
     """
     # Define las columnas que se van a usar para la comparación y unión.
-    COLS_TO_CHECK = ["id", "email", "first_name", "last_name", "document_type"]
+    COLS_TO_CHECK = ["email", "first_name", "last_name", "document_type"]
     JOIN_KEY = "document"
 
     # Une los DataFrames usando solo las columnas necesarias.
