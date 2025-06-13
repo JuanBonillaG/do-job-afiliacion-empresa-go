@@ -1,7 +1,7 @@
 import pandas as pd
 
 from utils.api_do_afiliacion import get_users_api_consulta_afiliacion
-from utils.api_go_integro import get_users_api_go_integro, get_api_token, get_group_items_api_go_integro#,create_users_api_go_integro, update_users_api_go_integro
+from utils.api_go_integro import get_users_api_go_integro, get_api_token, get_group_items_api_go_integro,create_users_api_go_integro, update_users_api_go_integro
 from utils.job_functions import compare_users, update_users_with_group_items
 
 ## Lee los usuarios desde la API Afiliación de empresas

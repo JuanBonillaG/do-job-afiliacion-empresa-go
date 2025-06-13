@@ -210,9 +210,9 @@ def update_users_api_go_integro(df, token):
         try:
             response = requests.patch(url, headers=headers, data=json.dumps(payload))
             if response.status_code != 200:
-                return f"Error al actualizar usuario {user_id},{row["document"]}: {response.status_code}, {response.text}"
+                return f"Error al actualizar usuario {user_id},{row['document']}: {response.status_code}, {response.text}"
         except Exception as e:
-            return f"Excepción al actualizar usuario {user_id},{row["document"]}: {e}"
+            return f"Excepción al actualizar usuario {user_id},{row['document']}: {e}"
 
     return "exitoso"
 
