@@ -7,27 +7,27 @@ from utils.job_functions import compare_users, update_users_with_group_items
 ## Lee los usuarios desde la API Afiliación de empresas
 df_users = get_users_api_consulta_afiliacion('GO_INTEGRO')
 
-"""
+
 df_users = pd.DataFrame([{
     "first_name": "Antiguo Usuario",
-    "email": None,
-    "last_name": "manual",
-    "employee_id": 123456,
+    "email": "pruebaactualizado@yopmail.com",
+    "last_name": "Actualizado job",
+    "employee_id": None,
     "document_type": "CC",
     "groups": "Empresas A&A:COLOMBIA SAS",
-    "document": 123456,
+    "document": 1234567,
     "external_id": "SB-987654321"
 },
 {
     "first_name": "Nuevo Usuario",
     "email": None,
-    "last_name": "job",
-    "employee_id": 987654321,
+    "last_name": "Creado job",
+    "employee_id": None,
     "document_type": "CC",
-    "groups": "Empresas A&A:COLOMBIA SAS",
+    "groups": "GOintegro:Recursos Humanos",
     "document": 987654321,
     "external_id": "SB-4389278"
-}])"""
+}])
 
 if df_users is None or df_users.empty:
     print("No se encontraron usuarios en la API consulta afiliación empresa")
@@ -59,7 +59,7 @@ if not df_new_users.empty:
     df_new_users = update_users_with_group_items(df_new_users, df_group_items)
 
     ## Escribe los usuarios por importar en GO INTEGRO
-    #result = create_users_api_go_integro(df_new_users, token)
+    result = create_users_api_go_integro(df_new_users, token)
 
 ## Toma los usuarios con cambios frente a GO INTEGRO
 print("Busca cambios en los usuarios registrados")
@@ -72,7 +72,7 @@ if not df_users_to_update.empty:
     df_users_to_update = update_users_with_group_items(df_users_to_update, df_group_items)
 
     ## Actualiza los usuarios en GO Integro
-    #result_update = update_users_api_go_integro
+    result_update = update_users_api_go_integro
 
 if(result != 'exitoso'):
     raise Exception(result)
