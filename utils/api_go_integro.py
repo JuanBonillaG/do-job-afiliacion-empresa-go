@@ -171,7 +171,6 @@ def update_users_api_go_integro(df, token):
     Returns:
         list: Lista con mensajes de respuesta por cada usuario.
     """
-    results = []
 
     for idx, row in df.iterrows():
         user_id = row["id"]
@@ -210,14 +209,12 @@ def update_users_api_go_integro(df, token):
         }
         try:
             response = requests.patch(url, headers=headers, data=json.dumps(payload))
-            if response.status_code == 200:
-                results.append(f"Usuario {user_id},{row["document"]} actualizado correctamente.")
-            else:
-                results.append(f"Error al actualizar usuario {user_id},{row["document"]}: {response.status_code}, {response.text}")
+            if response.status_code != 200:
+                return f"Error al actualizar usuario {user_id},{row["document"]}: {response.status_code}, {response.text}"
         except Exception as e:
-            results.append(f"Excepción al actualizar usuario {user_id},{row["document"]}: {e}")
+            return f"Excepción al actualizar usuario {user_id},{row["document"]}: {e}"
 
-    return results
+    return "exitoso"
 
 def get_group_items_api_go_integro(token):
     """
