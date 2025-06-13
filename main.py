@@ -62,6 +62,7 @@ if not df_new_users.empty:
     #result = create_users_api_go_integro(df_new_users, token)
 
 ## Toma los usuarios con cambios frente a GO INTEGRO
+print("Busca cambios en los usuarios registrados")
 df_users_to_update = compare_users(df_users, df_users_go)
 
 if not df_users_to_update.empty:

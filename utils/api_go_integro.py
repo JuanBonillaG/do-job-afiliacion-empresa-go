@@ -226,7 +226,7 @@ def get_group_items_api_go_integro(token):
     Returns:
         DataFrame: Respuesta del endpoint como DataFrame, o None si falla la solicitud.
     """
-    print("Lectura de usuarios desde API GO Integro")
+    print("Lectura de group_items desde API GO Integro")
     base_url = "https://api.gointegro.com/group-items"
     headers = {
         "accept": "application/json",

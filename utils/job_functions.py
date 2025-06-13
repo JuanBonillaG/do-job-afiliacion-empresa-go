@@ -2,7 +2,7 @@ import pandas as pd
 
 def compare_users(df_users_afiliacion,df_users_go):
     """
-    Compara cambios en los usuarios de afiliación frente a GO Integro
+    Compara cambios en todas las columnas de los usuarios de afiliación frente a GO Integro y retorna los usuarios de afiliación que van a ser actualizados.
 
     Args:
         df_users_afiliacion (DataFrame): DataFrame con los usuarios a actualizar.
@@ -10,41 +10,35 @@ def compare_users(df_users_afiliacion,df_users_go):
     Returns:
         DataFrame: DataFrame con los usuarios a actualizar.
     """
-    # Filtra usuarios que ya existen en GO INTEGRO
-    df_existing_users = df_users_afiliacion[df_users_afiliacion["document"].isin(df_users_go["document"])]
+    # Define las columnas que se van a usar para la comparación y unión.
+    COLS_TO_CHECK = ["id", "email", "first_name", "last_name", "document_type"]
+    JOIN_KEY = "document"
 
-    # Une los dataframes para comparar características
-    df_merged = pd.merge(
-        df_existing_users,
-        df_users_go,
-        on="document",
-        suffixes=('_new', '_go'),
-        how='inner'
+    # Une los DataFrames usando solo las columnas necesarias.
+    merged_df = pd.merge(
+        df_users_afiliacion[COLS_TO_CHECK],
+        df_users_go[COLS_TO_CHECK],
+        on=JOIN_KEY,
+        how="inner",
+        suffixes=('_afil', '_go')
     )
 
-    # Lista de columnas a comparar
-    columns_to_compare = [
-        col for col in df_existing_users.columns
-        if col in df_users_afiliacion.columns and col not in ["document", "id"]
-    ]
+    if merged_df.empty:
+        return pd.DataFrame(columns=df_users_afiliacion.columns)
 
-    # Encuentra filas con al menos una diferencia
-    mask_diff = df_merged.apply(
-        lambda row: any(
-            row[f"{col}_new"] != row[f"{col}_go"] for col in columns_to_compare
-        ),
-        axis=1
-    )
+    # Realiza la comparación
+    diff_mask = pd.Series(False, index=merged_df.index)
+    for col in COLS_TO_CHECK:
+        col_afil = col + '_afil'
+        col_go = col + '_go'
+        diff_mask |= (merged_df[col_afil] != merged_df[col_go]) & \
+                     ~(merged_df[col_afil].isnull() & merged_df[col_go].isnull())
 
-    # Usuarios por actualizar
-    df_users_to_update = df_merged[mask_diff]
+    # Obtiene los documentos de los usuarios con cambios.
+    documents_to_update = merged_df[diff_mask][JOIN_KEY]
 
-    # Se cambia a las columnas originales
-    df_users_to_update = df_users_to_update[[f"{col}_new" for col in df_users_afiliacion.columns]]
-    df_users_to_update.columns = df_users_afiliacion.columns
-
-    return df_users_to_update
-
+    # Retorna las filas completas del DataFrame de afiliación original.
+    return df_users_afiliacion[df_users_afiliacion[JOIN_KEY].isin(documents_to_update)]
 
 def update_users_with_group_items(df_users, df_group_items):
     """
