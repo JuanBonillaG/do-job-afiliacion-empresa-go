@@ -124,14 +124,11 @@ def create_users_api_go_integro(df, token):
                     "name": row["first_name"],
                     "last-name": row["last_name"],
                     "email": row["email"],
-                    "employee-id": row["employee_id"],
                     "document-type": row["document_type"],
                     "document": row["document"],
                     "external_id": row["external_id"],
                     "status": "active",
-                    "login-enabled": True
-                },
-                "relationships": {
+                    "login-enabled": True,
                     "group-items": {
                         "data": [
                             {
