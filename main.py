@@ -15,7 +15,7 @@ df_users = pd.DataFrame([{
     "employee_id": None,
     "document_type": "CC",
     "groups": "Empresas A&A:COLOMBIA SAS",
-    "document": 1234567,
+    "document": 12345,
     "external_id": "SB-987654321"
 },
 {
@@ -25,7 +25,7 @@ df_users = pd.DataFrame([{
     "employee_id": None,
     "document_type": "CC",
     "groups": "GOintegro:Recursos Humanos",
-    "document": 987654321,
+    "document": 34567,
     "external_id": "SB-4389278"
 }])
 
@@ -77,4 +77,5 @@ if not df_users_to_update.empty:
 if(result != 'exitoso'):
     raise Exception(result)
 if(result_update != 'exitoso'):
+    print(f"result_update {result_update}")
     raise Exception(result_update)
