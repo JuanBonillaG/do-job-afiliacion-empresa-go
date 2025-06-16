@@ -54,10 +54,10 @@ result        = 'exitoso'
 result_update = 'exitoso'
 if not df_new_users.empty:
     print(f"Usuarios que no existen aún en GO INTEGRO: {len(df_new_users)}")
-    print(f"Usuario por crear group_item_id: {df_new_users[0]['group_item_id']}")
 
     ## Cruza los usuarios por insertar con grupos de GO INTEGRO
     df_new_users = update_users_with_group_items(df_new_users, df_group_items)
+    print(f"Usuario por crear group_item_id: {df_new_users[0]['group_item_id']}")
 
     ## Escribe los usuarios por importar en GO INTEGRO
     result = create_users_api_go_integro(df_new_users, token)
@@ -68,10 +68,10 @@ df_users_to_update = compare_users(df_users, df_users_go)
 
 if not df_users_to_update.empty:
     print(f"Usuarios por actualizar en GO INTEGRO: {len(df_users_to_update)}")
-    print(f"Usuario por patch ID: {df_users_to_update[0]['id']}")
 
     ## Cruza los usuarios por insertar con grupos de GO INTEGRO
     df_users_to_update = update_users_with_group_items(df_users_to_update, df_group_items)
+    print(f"Usuario por patch ID: {df_users_to_update[0]['id']}")
 
     ## Actualiza los usuarios en GO Integro
     result_update = update_users_api_go_integro
