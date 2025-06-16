@@ -57,7 +57,7 @@ if not df_new_users.empty:
 
     ## Cruza los usuarios por insertar con grupos de GO INTEGRO
     df_new_users = update_users_with_group_items(df_new_users, df_group_items)
-    print(f"Usuario por crear group_item_id: {df_new_users[0]['group_item_id']}")
+    print(f"Usuario por crear group_item_id: {df_new_users}")
 
     ## Escribe los usuarios por importar en GO INTEGRO
     result = create_users_api_go_integro(df_new_users, token)
@@ -71,7 +71,7 @@ if not df_users_to_update.empty:
 
     ## Cruza los usuarios por insertar con grupos de GO INTEGRO
     df_users_to_update = update_users_with_group_items(df_users_to_update, df_group_items)
-    print(f"Usuario por patch ID: {df_users_to_update[0]['id']}")
+    print(f"Usuario por patch ID: {df_users_to_update}")
 
     ## Actualiza los usuarios en GO Integro
     result_update = update_users_api_go_integro
