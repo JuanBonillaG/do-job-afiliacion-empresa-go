@@ -174,7 +174,7 @@ def update_users_api_go_integro(df, token):
     row = df
     for i in range(0,len(df)):
         try:
-            user_id = row[i]["id"]
+            user_id = row.iloc[i]["id"]
             url = f"https://api.gointegro.com/users/{user_id}"
             headers = {
                 "accept": "application/json",
@@ -186,11 +186,11 @@ def update_users_api_go_integro(df, token):
                     "type": "users",
                     "id": user_id,
                     "attributes": {
-                        "name": row[i]["first_name"],
-                        "last-name": row[i]["last_name"],
-                        "email": row[i]["email"],
-                        "document-type": row[i]["document_type"],
-                        "document": row[i]["document"],
+                        "name": row.iloc[i]["first_name"],
+                        "last-name": row.iloc[i]["last_name"],
+                        "email": row.iloc[i]["email"],
+                        "document-type": row.iloc[i]["document_type"],
+                        "document": row.iloc[i]["document"],
                         "status": "active",
                         "login-enabled": True
                     },
@@ -199,7 +199,7 @@ def update_users_api_go_integro(df, token):
                             "data": [
                                 {
                                     "type": "group-items",
-                                    "id": row[i]["group_item_id"]
+                                    "id": row.iloc[i]["group_item_id"]
                                 }
                             ]
                         }
