@@ -173,6 +173,7 @@ def update_users_api_go_integro(df, token):
     """
     for row in df:
         try:
+            row = pd.DataFrame(row).transpose()
             user_id = row["id"]
             url = f"https://api.gointegro.com/users/{user_id}"
             headers = {
