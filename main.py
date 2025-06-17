@@ -73,7 +73,7 @@ if not df_users_to_update.empty:
     print(f"Usuario por patch ID: {df_users_to_update}")
 
     ## Actualiza los usuarios en GO Integro
-    result_update = update_users_api_go_integro
+    result_update = update_users_api_go_integro(df_users_to_update, token)
 
 if(result != 'exitoso'):
     print(f"resultado de inserción: {result}")
