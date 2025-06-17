@@ -171,10 +171,10 @@ def update_users_api_go_integro(df, token):
     Returns:
         list: Lista con mensajes de respuesta por cada usuario.
     """
-    for row in df:
+    row = df
+    for i in range(0,len(df)):
         try:
-            row = pd.DataFrame(row).transpose()
-            user_id = row["id"]
+            user_id = row[i]["id"]
             url = f"https://api.gointegro.com/users/{user_id}"
             headers = {
                 "accept": "application/json",
@@ -186,11 +186,11 @@ def update_users_api_go_integro(df, token):
                     "type": "users",
                     "id": user_id,
                     "attributes": {
-                        "name": row["first_name"],
-                        "last-name": row["last_name"],
-                        "email": row["email"],
-                        "document-type": row["document_type"],
-                        "document": row["document"],
+                        "name": row[i]["first_name"],
+                        "last-name": row[i]["last_name"],
+                        "email": row[i]["email"],
+                        "document-type": row[i]["document_type"],
+                        "document": row[i]["document"],
                         "status": "active",
                         "login-enabled": True
                     },
@@ -199,7 +199,7 @@ def update_users_api_go_integro(df, token):
                             "data": [
                                 {
                                     "type": "group-items",
-                                    "id": row["group_item_id"]
+                                    "id": row[i]["group_item_id"]
                                 }
                             ]
                         }
@@ -208,11 +208,11 @@ def update_users_api_go_integro(df, token):
             }
             response = requests.patch(url, headers=headers, data=json.dumps(payload))
             if response.status_code != 200:
-                print(f"Error al actualizar usuario {user_id},{row['document']}: {response.status_code}, {response.text}")
-                return f"Error al actualizar usuario {user_id},{row['document']}: {response.status_code}, {response.text}"
+                print(f"Error al actualizar usuario {user_id},{row[i]['document']}: {response.status_code}, {response.text}")
+                return f"Error al actualizar usuario {user_id},{row[i]['document']}: {response.status_code}, {response.text}"
         except Exception as e:
-            print(f"Excepción al actualizar usuario {user_id},{row['document']}: {e}")
-            return f"Excepción al actualizar usuario {user_id},{row['document']}: {e}"
+            print(f"Excepción al actualizar usuario {user_id},{row[i]['document']}: {e}")
+            return f"Excepción al actualizar usuario {user_id},{row[i]['document']}: {e}"
 
     return "exitoso"
 
