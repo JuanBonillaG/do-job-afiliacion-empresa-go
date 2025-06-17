@@ -10,11 +10,11 @@ def compare_users(df_users_afiliacion,df_users_go):
     Returns:
         DataFrame: DataFrame con los usuarios a actualizar.
     """
-    # Define las columnas que se van a usar para la comparación y unión.
+    # 1. Define las columnas que se van a usar para la comparación y unión.
     COLS_TO_CHECK = ["document", "email", "first_name", "last_name", "document_type"]
     JOIN_KEY = "document"
 
-    # Une los DataFrames usando solo las columnas necesarias.
+    # 2. Une los DataFrames usando solo las columnas necesarias.
     merged_df = pd.merge(
         df_users_afiliacion[COLS_TO_CHECK],
         df_users_go[COLS_TO_CHECK],
@@ -26,17 +26,18 @@ def compare_users(df_users_afiliacion,df_users_go):
     if merged_df.empty:
         return pd.DataFrame(columns=df_users_afiliacion.columns)
 
-    # Realiza la comparación
+    # 3. Realiza la comparación
     diff_mask = pd.Series(False, index=merged_df.index)
     for col in COLS_TO_CHECK:
         if col == JOIN_KEY:
-            continue # No comparar la clave de unión consigo misma
+            # No comparar la clave de unión consigo misma
+            continue 
         col_afil = col + '_afil'
         col_go = col + '_go'
         diff_mask |= (merged_df[col_afil] != merged_df[col_go]) & \
                      ~(merged_df[col_afil].isnull() & merged_df[col_go].isnull())
 
-    # Obtiene los documentos de los usuarios con cambios.
+    # 4. Obtiene los documentos de los usuarios con cambios.
     documents_to_update = merged_df[diff_mask][JOIN_KEY]
 
     # Retorna las filas completas del DataFrame de afiliación original.
@@ -53,11 +54,11 @@ def update_users_with_group_items(df_users, df_group_items):
     Returns:
         pd.DataFrame: df_users enriquecido con columnas 'group_item_id' y 'group_item_type'.
     """
-    # Extraer la empresa desde la columna 'groups'
+    # 1. Extraer la empresa desde la columna 'groups'
     df_users = df_users.copy()
     df_users["empresa"] = df_users["groups"].str.split(":").str[1]
 
-    # Merge con df_group_items en base a empresa == name de group_items
+    # 2. Merge con df_group_items en base a nombre de empresa para obtener código dado en GO
     df_merged = df_users.merge(
         df_group_items,
         how="left",
@@ -65,7 +66,7 @@ def update_users_with_group_items(df_users, df_group_items):
         right_on="name"
     )
 
-    # Renombra las columnas y limpieza
+    # 3. Renombra las columnas y limpieza
     df_merged.rename(columns={
         "id": "group_item_id",
         "type": "group_item_type"

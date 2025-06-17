@@ -7,7 +7,7 @@ from utils.job_functions import compare_users, update_users_with_group_items
 ## Lee los usuarios desde la API Afiliación de empresas
 df_users = get_users_api_consulta_afiliacion('GO_INTEGRO')
 
-
+# Mock de respuesta de api consulta afiliación
 df_users = pd.DataFrame([{
     "first_name": "Antiguo Usuario",
     "email": "pruebaactualizado@yopmail.com",
@@ -29,6 +29,7 @@ df_users = pd.DataFrame([{
     "external_id": "SB-4389278"
 }])
 
+# Valida que existan usuarios en las empresas registradas
 if df_users is None or df_users.empty:
     print("No se encontraron usuarios en la API consulta afiliación empresa")
     exit()  
@@ -38,38 +39,36 @@ print(f"Cantidad de usuarios encontrados en la API consulta afiliación empresa:
 ## Obtiene token de acceso GO INTEGRO
 token = get_api_token()
 
-## Lee los usuarios ya registrados en GO INTEGRO
+## Lee los usuarios y grupos(empresas) ya registrados en GO INTEGRO
 df_users_go = get_users_api_go_integro(token)
-## Lee los grupos creados en GO INTEGRO
 df_group_items = get_group_items_api_go_integro(token)
 
 # Asegura la consistencia de tipos
 df_users["document"] = df_users["document"].astype(str)
 df_users_go["document"] = df_users_go["document"].astype(str)
 
-## Filtra usuarios cuyo documento no existe en GO INTEGRO
+## 1. Filtra usuarios cuyo documento no existe en GO INTEGRO
 df_new_users = df_users[~df_users["document"].isin(df_users_go["document"])]
-
 result        = 'exitoso'
 result_update = 'exitoso'
+
 if not df_new_users.empty:
     print(f"Usuarios que no existen aún en GO INTEGRO: {len(df_new_users)}")
 
-    ## Cruza los usuarios por insertar con grupos de GO INTEGRO
+    ## Agrega código de grupos dado desde GO INTEGRO
     df_new_users = update_users_with_group_items(df_new_users, df_group_items)
-    print(f"Usuario por crear group_item_id: {df_new_users}")
 
     ## Escribe los usuarios por importar en GO INTEGRO
     result = create_users_api_go_integro(df_new_users, token)
 
-## Toma los usuarios con cambios frente a GO INTEGRO
+## 2. Toma los usuarios con cambios frente a GO INTEGRO
 print("Busca cambios en los usuarios registrados")
 df_users_to_update = compare_users(df_users, df_users_go)
 
 if not df_users_to_update.empty:
     print(f"Usuarios por actualizar en GO INTEGRO: {len(df_users_to_update)}")
 
-    ## Cruza los usuarios por insertar con grupos de GO INTEGRO
+    ## Agrega código de grupos dado desde GO INTEGRO
     df_users_to_update = update_users_with_group_items(df_users_to_update, df_group_items)
     print(f"Usuario por patch ID: {df_users_to_update}")
 
@@ -77,7 +76,8 @@ if not df_users_to_update.empty:
     result_update = update_users_api_go_integro
 
 if(result != 'exitoso'):
+    print(f"resultado de inserción: {result}")
     raise Exception(result)
 if(result_update != 'exitoso'):
-    print(f"result_update {result_update}")
+    print(f"resultado de actualización: {result_update}")
     raise Exception(result_update)
