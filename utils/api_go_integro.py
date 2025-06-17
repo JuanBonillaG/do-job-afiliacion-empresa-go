@@ -171,7 +171,7 @@ def update_users_api_go_integro(df, token):
     Returns:
         list: Lista con mensajes de respuesta por cada usuario.
     """
-    for idx, row in df.iterrows():
+    for row in df:
         try:
             user_id = row["id"]
             url = f"https://api.gointegro.com/users/{user_id}"
