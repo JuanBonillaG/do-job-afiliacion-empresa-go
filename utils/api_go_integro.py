@@ -152,6 +152,9 @@ def create_users_api_go_integro(df, token):
             print(f"Excepción al crear usuario {row['employee_id']}: {e}")
             failed_users.append(row["employee_id"])
     
+    # Actualiza los mismos usuarios para agregar group-items
+    update_users_api_go_integro(df,token)
+    
     if failed_users:
         return f"usuarios fallidos: {failed_users}"
     else:
@@ -207,8 +210,10 @@ def update_users_api_go_integro(df, token):
         try:
             response = requests.patch(url, headers=headers, data=json.dumps(payload))
             if response.status_code != 200:
+                print(f"Error al actualizar usuario {user_id},{row['document']}: {response.status_code}, {response.text}")
                 return f"Error al actualizar usuario {user_id},{row['document']}: {response.status_code}, {response.text}"
         except Exception as e:
+            print(f"Excepción al actualizar usuario {user_id},{row['document']}: {e}")
             return f"Excepción al actualizar usuario {user_id},{row['document']}: {e}"
 
     return "exitoso"
