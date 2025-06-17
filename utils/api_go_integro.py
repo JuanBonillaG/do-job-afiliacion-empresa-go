@@ -71,8 +71,6 @@ def get_users_api_go_integro(token):
 
             data = json_response.get("data", [])
             for user in data:
-                print(f"GO user id: {user.get('id')}")
-                print(user)
                 attributes = user.get("attributes", {})
                 all_users.append({
                     "id": user.get("id"),
@@ -91,7 +89,7 @@ def get_users_api_go_integro(token):
             if page_number >= total_pages:
                 break
             page_number += 1
-
+        print(all_users)
         return pd.DataFrame(all_users)
 
     except Exception as e:
