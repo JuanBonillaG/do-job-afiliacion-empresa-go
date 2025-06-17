@@ -43,6 +43,21 @@ def compare_users(df_users_afiliacion,df_users_go):
     # Retorna las filas completas del DataFrame de afiliación original.
     return df_users_afiliacion[df_users_afiliacion[JOIN_KEY].isin(documents_to_update)]
 
+def merge_user_ids(df_users, df_users_go):
+    """
+    Agrega el 'id' de df_users_go a df_users utilizando el documento.
+
+    Args:
+        df_users (pd.DataFrame): DataFrame original de usuarios.
+        df_users_go (pd.DataFrame): DataFrame de usuarios de "Go".
+
+    Returns:
+        pd.DataFrame: El DataFrame df_users original con una nueva columna 'id_go'
+    """
+    df_users_go_subset = df_users_go[['id', 'document']].rename(columns={'id': 'id_go'})
+    merged_df = pd.merge(df_users, df_users_go_subset, on='document', how='left')
+    return merged_df
+
 def update_users_with_group_items(df_users, df_group_items):
     """
     Agrega a df_users el group_item_id y group_item_type tomado desde GO Integro.

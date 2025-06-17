@@ -2,7 +2,7 @@ import pandas as pd
 
 from utils.api_do_afiliacion import get_users_api_consulta_afiliacion
 from utils.api_go_integro import get_users_api_go_integro, get_api_token, get_group_items_api_go_integro,create_users_api_go_integro, update_users_api_go_integro
-from utils.job_functions import compare_users, update_users_with_group_items
+from utils.job_functions import compare_users, update_users_with_group_items, merge_user_ids
 
 ## Lee los usuarios desde la API Afiliación de empresas
 df_users = get_users_api_consulta_afiliacion('GO_INTEGRO')
@@ -67,10 +67,9 @@ df_users_to_update = compare_users(df_users, df_users_go)
 
 if not df_users_to_update.empty:
     print(f"Usuarios por actualizar en GO INTEGRO: {len(df_users_to_update)}")
-
+    df_users_to_update = merge_user_ids(df_users_to_update, df_users_go)
     ## Agrega código de grupos dado desde GO INTEGRO
     df_users_to_update = update_users_with_group_items(df_users_to_update, df_group_items)
-    print(f"Usuario por patch ID: {df_users_to_update}")
 
     ## Actualiza los usuarios en GO Integro
     result_update = update_users_api_go_integro(df_users_to_update, token)
