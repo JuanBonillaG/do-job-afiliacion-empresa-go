@@ -71,6 +71,8 @@ def get_users_api_go_integro(token):
 
             data = json_response.get("data", [])
             for user in data:
+                print(f"GO user id: {user.get('id')}")
+                print(user)
                 attributes = user.get("attributes", {})
                 all_users.append({
                     "id": user.get("id"),
