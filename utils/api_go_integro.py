@@ -144,13 +144,13 @@ def create_users_api_go_integro(df, token):
         try:
             response = requests.post(url, headers=headers, data=json.dumps(payload))
             if response.status_code == 201:
-                print(f"Usuario {row['employee_id']} creado correctamente.")
+                print(f"Usuario {row['document']} creado correctamente.")
             else:
-                print(f"Error al crear usuario {row['employee_id']}: {response.status_code}, {response.text}")
-                failed_users.append(row["employee_id"])
+                print(f"Error al crear usuario {row['document']}: {response.status_code}, {response.text}")
+                failed_users.append(row["document"])
         except Exception as e:
-            print(f"Excepción al crear usuario {row['employee_id']}: {e}")
-            failed_users.append(row["employee_id"])
+            print(f"Excepción al crear usuario {row['document']}: {e}")
+            failed_users.append(row["document"])
     
     # Actualiza los mismos usuarios para agregar group-items
     update_users_api_go_integro(df,token)
@@ -171,43 +171,40 @@ def update_users_api_go_integro(df, token):
     Returns:
         list: Lista con mensajes de respuesta por cada usuario.
     """
-
     for idx, row in df.iterrows():
-        user_id = row["id"]
-        url = f"https://api.gointegro.com/users/{user_id}"
-        headers = {
-            "accept": "application/json",
-            "Authorization": token,
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "data": {
-                "type": "users",
-                "id": user_id,
-                "attributes": {
-                    "name": row["first_name"],
-                    "last-name": row["last_name"],
-                    "email": row["email"],
-                    "employee-id": row["employee_id"],
-                    "document-type": row["document_type"],
-                    "document": row["document"],
-                    "external_id": row["external_id"],
-                    "status": "active",
-                    "login-enabled": True
-                },
-                "relationships": {
-                    "group-items": {
-                        "data": [
-                            {
-                                "type": "group-items",
-                                "id": row["group_item_id"]
-                            }
-                        ]
+        try:
+            user_id = row["id"]
+            url = f"https://api.gointegro.com/users/{user_id}"
+            headers = {
+                "accept": "application/json",
+                "Authorization": token,
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "data": {
+                    "type": "users",
+                    "id": user_id,
+                    "attributes": {
+                        "name": row["first_name"],
+                        "last-name": row["last_name"],
+                        "email": row["email"],
+                        "document-type": row["document_type"],
+                        "document": row["document"],
+                        "status": "active",
+                        "login-enabled": True
+                    },
+                    "relationships": {
+                        "group-items": {
+                            "data": [
+                                {
+                                    "type": "group-items",
+                                    "id": row["group_item_id"]
+                                }
+                            ]
+                        }
                     }
                 }
             }
-        }
-        try:
             response = requests.patch(url, headers=headers, data=json.dumps(payload))
             if response.status_code != 200:
                 print(f"Error al actualizar usuario {user_id},{row['document']}: {response.status_code}, {response.text}")
