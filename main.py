@@ -68,11 +68,12 @@ df_users_to_update = compare_users(df_users, df_users_go)
 if not df_users_to_update.empty:
     print(f"Usuarios por actualizar en GO INTEGRO: {len(df_users_to_update)}")
     df_users_to_update = merge_user_ids(df_users_to_update, df_users_go)
+    print(f"ID de usuario{df_users_to_update.iloc[0]['ID']}") 
     ## Agrega código de grupos dado desde GO INTEGRO
     df_users_to_update = update_users_with_group_items(df_users_to_update, df_group_items)
 
     ## Actualiza los usuarios en GO Integro
-    result_update = update_users_api_go_integro(df_users_to_update, token)
+    #result_update = update_users_api_go_integro(df_users_to_update, token)
 
 if(result != 'exitoso'):
     print(f"resultado de inserción: {result}")
