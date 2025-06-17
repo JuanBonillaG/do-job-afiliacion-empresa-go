@@ -54,7 +54,7 @@ def merge_user_ids(df_users, df_users_go):
     Returns:
         pd.DataFrame: El DataFrame df_users original con una nueva columna 'id_go'
     """
-    df_users_go_subset = df_users_go[['id', 'document']].rename(columns={'id': 'id_go'})
+    df_users_go_subset = df_users_go[['id', 'document']]
     merged_df = pd.merge(df_users, df_users_go_subset, on='document', how='left')
     return merged_df
 

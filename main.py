@@ -73,7 +73,7 @@ if not df_users_to_update.empty:
     df_users_to_update = update_users_with_group_items(df_users_to_update, df_group_items)
 
     ## Actualiza los usuarios en GO Integro
-    #result_update = update_users_api_go_integro(df_users_to_update, token)
+    result_update = update_users_api_go_integro(df_users_to_update, token)
 
 if(result != 'exitoso'):
     print(f"resultado de inserción: {result}")
