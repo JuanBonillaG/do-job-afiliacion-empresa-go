@@ -152,6 +152,12 @@ def create_users_api_go_integro(df, token):
             print(f"Excepción al crear usuario {row['document']}: {e}")
             failed_users.append(row["document"])
     
+    # Obtiene usuarios de GO Integro
+    df_users_go = get_users_api_go_integro(token)
+
+    # Agrega id con df_users_go a df
+    df = pd.merge(df, df_users_go[['id', 'document']], on='document', how='left')
+
     # Actualiza los mismos usuarios para agregar group-items
     update_users_api_go_integro(df,token)
     

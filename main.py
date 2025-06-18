@@ -11,22 +11,12 @@ df_users = get_users_api_consulta_afiliacion('GO_INTEGRO')
 df_users = pd.DataFrame([{
     "first_name": "Usuario",
     "email": "pruebaactualizado@yopmail.com",
-    "last_name": "Actualizado",
-    "employee_id": None,
-    "document_type": "CC",
-    "groups": "Empresas A&A:COLOMBIA SAS",
-    "document": 987654321,
-    "external_id": "SB-987654321"
-},
-{
-    "first_name": "Actualizado Usuario",
-    "email": None,
-    "last_name": "Creado job",
+    "last_name": "Nuevo 1706",
     "employee_id": None,
     "document_type": "CC",
     "groups": "GOintegro:Recursos Humanos",
-    "document": 34567,
-    "external_id": "SB-4389278"
+    "document": 333333333,
+    "external_id": "SB-987654321"
 }])
 
 # Valida que existan usuarios en las empresas registradas
