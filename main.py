@@ -9,13 +9,13 @@ df_users = get_users_api_consulta_afiliacion('GO_INTEGRO')
 
 # Mock de respuesta de api consulta afiliación
 df_users = pd.DataFrame([{
-    "first_name": "Test2",
+    "first_name": "Test3",
     "email": None,
     "last_name": "Nuevo 1706",
     "employee_id": None,
     "document_type": "CC",
     "groups": "GOintegro:Recursos Humanos",
-    "document": 2222222222,
+    "document": 2323,
     "external_id": "SB-987654321"
 }])
 
