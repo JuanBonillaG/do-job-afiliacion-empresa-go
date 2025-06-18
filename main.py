@@ -10,7 +10,7 @@ df_users = get_users_api_consulta_afiliacion('GO_INTEGRO')
 # Mock de respuesta de api consulta afiliación
 df_users = pd.DataFrame([{
     "first_name": "Usuario",
-    "email": "pruebaactualizado@yopmail.com",
+    "email": "otheremail@yopmail.com",
     "last_name": "Nuevo 1706",
     "employee_id": None,
     "document_type": "CC",
