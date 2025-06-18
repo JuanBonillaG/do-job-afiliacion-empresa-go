@@ -115,25 +115,25 @@ def create_users_api_go_integro(df, token):
     }
 
     failed_users = []
-
-    for index, row in df.iterrows():
+    row = df
+    for i in range(0,len(df)):
         payload = {
             "data": {
                 "type": "users",
                 "attributes": {
-                    "name": row["first_name"],
-                    "last-name": row["last_name"],
-                    "email": row["email"],
-                    "document-type": row["document_type"],
-                    "document": row["document"],
-                    "external_id": row["external_id"],
+                    "name": row.iloc[i]["first_name"],
+                    "last-name": row.iloc[i]["last_name"],
+                    "email": row.iloc[i]["email"],
+                    "document-type": row.iloc[i]["document_type"],
+                    "document": row.iloc[i]["document"],
+                    "external_id": row.iloc[i]["external_id"],
                     "status": "active",
                     "login-enabled": True,
                     "group-items": {
                         "data": [
                             {
                                 "type": "group-items",
-                                "id": row["group_item_id"]
+                                "id": row.iloc[i]["group_item_id"]
                             }
                         ]
                     }
@@ -144,13 +144,13 @@ def create_users_api_go_integro(df, token):
         try:
             response = requests.post(url, headers=headers, data=json.dumps(payload))
             if response.status_code == 201:
-                print(f"Usuario {row['document']} creado correctamente.")
+                print(f"Usuario {row.iloc[i]['document']} creado correctamente.")
             else:
-                print(f"Error al crear usuario {row['document']}: {response.status_code}, {response.text}")
-                failed_users.append(row["document"])
+                print(f"Error al crear usuario {row.iloc[i]['document']}: {response.status_code}, {response.text}")
+                failed_users.append(row.iloc[i]["document"])
         except Exception as e:
-            print(f"Excepción al crear usuario {row['document']}: {e}")
-            failed_users.append(row["document"])
+            print(f"Excepción al crear usuario {row.iloc[i]['document']}: {e}")
+            failed_users.append(row.iloc[i]["document"])
     
     # Obtiene usuarios de GO Integro
     df_users_go = get_users_api_go_integro(token)
