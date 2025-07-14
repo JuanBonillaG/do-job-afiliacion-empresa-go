@@ -25,7 +25,7 @@ if df_users is None or df_users.empty:
     exit()  
 
 # TODO: Temporal, remover
-df_users = df_users.head(3)
+df_users = df_users[df_users['empresa'] == "Valdivieso&Jaramillo"]
 
 print(f"Cantidad de usuarios encontrados en la API consulta afiliación empresa: {len(df_users)}")
 
