@@ -24,6 +24,9 @@ if df_users is None or df_users.empty:
     print("No se encontraron usuarios en la API consulta afiliación empresa")
     exit()  
 
+# TODO: Temporal, remover
+df_users = df_users.head(3)
+
 print(f"Cantidad de usuarios encontrados en la API consulta afiliación empresa: {len(df_users)}")
 
 ## Obtiene token de acceso GO INTEGRO
